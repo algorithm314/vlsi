@@ -26,7 +26,7 @@ begin
 			end if;
 		end if;
 	end process;
-	
+
 	with direction select so <= 
 		dff(0) when '0',
 		dff(3) when '1',

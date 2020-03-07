@@ -1,9 +1,8 @@
--- half_adder_simple_tb.vhd
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 --use ieee.std_logic_arith.all;
+--use IEEE.std_logic_unsigned.all;
 
 
 entity testbench is
@@ -20,9 +19,8 @@ begin
     for i in 0 to 7 loop
 		sel <= std_logic_vector(to_unsigned(i,3));
 		wait for 10 ns;
-		--assert(unsigned(o) = shift_left(1,unsigned(sel))); 
+		--assert o = std_logic_vector(shift_left(unsigned("00000001"),i)); 
 	end loop;
 	wait;
-    end process;
-    --sel <= "000", "001" after 20 ns, "010" after 40 ns, "011" after 60 ns;        
+    end process;     
 end tb ;

@@ -26,7 +26,7 @@ begin
 							if count /= limit then
 								count <= count+1;
 							else
-								count<=(others=>'0');
+								count <=(others=>'0');
 							end if;
 						when '1' => 
 							if count = "000" then
@@ -36,6 +36,7 @@ begin
 							end if;
 						when others => count <= (others => 'X');
 					end case;
+
 			end if;
 		end if;
 	end process;
