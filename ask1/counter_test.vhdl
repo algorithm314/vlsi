@@ -41,7 +41,7 @@ begin
 	clocking: process
 	begin
 		for i in 0 to clock_num loop
-			clk <= '0', '1' after clock_period / 2;
+			clk <= '1', '0' after clock_period / 2;
 			wait for clock_period;
 		end loop;
 	wait;
