@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Αγιάννης Κωνσταντίνος 03116352" />
+  <meta name="author" content="Ηλιακοπούλου Νικολέτα 031??" />
+  <meta name="author" content="Καπελώνης Ελευθέριος 03116163" />
+  <title>Ψηφιακά Συστήματα VLSI, 1η Εργαστηριακή Άσκηση</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Ψηφιακά Συστήματα VLSI, 1η Εργαστηριακή Άσκηση</h1>
+<p class="author">Αγιάννης Κωνσταντίνος 03116352</p>
+<p class="author">Ηλιακοπούλου Νικολέτα 031??</p>
+<p class="author">Καπελώνης Ελευθέριος 03116163</p>
+</header>
+<h1 id="α.2">Α.2</h1>
+<h2 id="dataflow-αρχιτεκτονική">Dataflow αρχιτεκτονική</h2>
+<p>Σε αυτήν την αρχιτεκτονική χρησιμοποιήθηκε η δομή <code>with ... select</code> ώστε να γίνει η αντιστοίχηση του σήματος εισόδου <code>sel</code> στο σήμα εξόδου <code>o</code>. Παρακάτω φαίνεται το RTL σχηματικό που είναι μια ROM η οποία κάνει την αντιστοίχηση του αποκωδικοποιητή.</p>
+<p><img src="img/decoder_dataflow_rtl.png" /></p>
+<h3 id="κώδικας-vhdl">Κώδικας VHDL</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode vhdl"><code class="sourceCode vhdl"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span> IEEE;</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">use</span> IEEE<span class="ot">.</span>std_logic_1164<span class="ot">.</span>all;</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">entity</span> <span class="kw">decoder8</span> <span class="kw">is</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>        <span class="kw">port</span> (</span>
+<span id="cb1-6"><a href="#cb1-6"></a>                sel <span class="ot">:</span> <span class="kw">in</span>  <span class="dt">std_logic_vector</span>(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb1-7"><a href="#cb1-7"></a>                o  <span class="ot">:</span> <span class="kw">out</span> <span class="dt">std_logic_vector</span>(<span class="dv">7</span> <span class="ot">downto</span> <span class="dv">0</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a>        );</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="kw">end decoder8;</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="kw">architecture</span> <span class="kw">decoder8_dataflow</span> <span class="kw">of</span> <span class="kw">decoder8</span> <span class="kw">is</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="kw">begin</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a>    <span class="kw">with</span> sel <span class="kw">select</span> o <span class="ot">&lt;=</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a>    <span class="st">&quot;00000001&quot;</span> <span class="kw">when</span> <span class="st">&quot;000&quot;</span><span class="ot">,</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a>    <span class="st">&quot;00000010&quot;</span> <span class="kw">when</span> <span class="st">&quot;001&quot;</span><span class="ot">,</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a>    <span class="st">&quot;00000100&quot;</span> <span class="kw">when</span> <span class="st">&quot;010&quot;</span><span class="ot">,</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a>    <span class="st">&quot;00001000&quot;</span> <span class="kw">when</span> <span class="st">&quot;011&quot;</span><span class="ot">,</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a>    <span class="st">&quot;00010000&quot;</span> <span class="kw">when</span> <span class="st">&quot;100&quot;</span><span class="ot">,</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a>    <span class="st">&quot;00100000&quot;</span> <span class="kw">when</span> <span class="st">&quot;101&quot;</span><span class="ot">,</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>    <span class="st">&quot;01000000&quot;</span> <span class="kw">when</span> <span class="st">&quot;110&quot;</span><span class="ot">,</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a>    <span class="st">&quot;10000000&quot;</span> <span class="kw">when</span> <span class="st">&quot;111&quot;</span><span class="ot">,</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a>    <span class="st">&quot;XXXXXXXX&quot;</span> <span class="kw">when</span> <span class="ot">others</span>;</span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="er">end decoder8_dataflow;</span></span></code></pre></div>
+<h2 id="behavioral-αρχιτεκτονική">Behavioral αρχιτεκτονική</h2>
+<p>Επαναλαμβάνουμε τη σχεδίαση του αποκωδικοποιητή τώρα χρησιμοποιώντας behavioral αρχιτεκτονική. Χρησιμοποιείται ένα <code>process</code> με sensitivity list το σήμα <code>sel</code> το οποίο έχει μια δομή <code>case</code>. Η διαφορά με την dataflow αρχιτεκτονική είναι ότι τα statements τώρα είναι sequential. Όλο το <code>process</code> περιγράφει sequential statements αλλά στο συγκεκριμένο παράδειγμα ούτως ή άλλως υπάρχει μόνο το <code>case</code>. Το RTL σχηματικό είναι ακριβώς το ίδιο με το αντίστοιχο στην περίπτωση της dataflow αρχιτεκτονικής.</p>
+<p><img src="img/decoder_behavioral_rtl.jpg" /></p>
+<h3 id="κώδικας-vhdl-1">Κώδικας VHDL</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode vhdl"><code class="sourceCode vhdl"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span> IEEE;</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">use</span> IEEE<span class="ot">.</span>std_logic_1164<span class="ot">.</span>all;</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="kw">entity</span> <span class="kw">decoder8</span> <span class="kw">is</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>        <span class="kw">port</span> (</span>
+<span id="cb2-6"><a href="#cb2-6"></a>                sel <span class="ot">:</span> <span class="kw">in</span>  <span class="dt">std_logic_vector</span>(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb2-7"><a href="#cb2-7"></a>                o  <span class="ot">:</span> <span class="kw">out</span> <span class="dt">std_logic_vector</span>(<span class="dv">7</span> <span class="ot">downto</span> <span class="dv">0</span>)</span>
+<span id="cb2-8"><a href="#cb2-8"></a>        );</span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="kw">end decoder8;</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="kw">architecture</span> <span class="kw">decoder8_behavioral</span> <span class="kw">of</span> <span class="kw">decoder8</span> <span class="kw">is</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="kw">begin</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>    <span class="kw">process</span>(sel)</span>
+<span id="cb2-14"><a href="#cb2-14"></a>    <span class="kw">begin</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a>        <span class="kw">case</span> sel <span class="kw">is</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a>            <span class="kw">when</span> <span class="st">&quot;000&quot;</span> <span class="ot">=&gt;</span> o <span class="ot">&lt;=</span> <span class="st">&quot;00000001&quot;</span>; </span>
+<span id="cb2-17"><a href="#cb2-17"></a>            <span class="kw">when</span> <span class="st">&quot;001&quot;</span> <span class="ot">=&gt;</span> o <span class="ot">&lt;=</span> <span class="st">&quot;00000010&quot;</span>;</span>
+<span id="cb2-18"><a href="#cb2-18"></a>            <span class="kw">when</span> <span class="st">&quot;010&quot;</span> <span class="ot">=&gt;</span> o <span class="ot">&lt;=</span> <span class="st">&quot;00000100&quot;</span>;</span>
+<span id="cb2-19"><a href="#cb2-19"></a>            <span class="kw">when</span> <span class="st">&quot;011&quot;</span> <span class="ot">=&gt;</span> o <span class="ot">&lt;=</span> <span class="st">&quot;00001000&quot;</span>;</span>
+<span id="cb2-20"><a href="#cb2-20"></a>            <span class="kw">when</span> <span class="st">&quot;100&quot;</span> <span class="ot">=&gt;</span> o <span class="ot">&lt;=</span> <span class="st">&quot;00010000&quot;</span>;</span>
+<span id="cb2-21"><a href="#cb2-21"></a>            <span class="kw">when</span> <span class="st">&quot;101&quot;</span> <span class="ot">=&gt;</span> o <span class="ot">&lt;=</span> <span class="st">&quot;00100000&quot;</span>;</span>
+<span id="cb2-22"><a href="#cb2-22"></a>            <span class="kw">when</span> <span class="st">&quot;110&quot;</span> <span class="ot">=&gt;</span> o <span class="ot">&lt;=</span> <span class="st">&quot;01000000&quot;</span>;</span>
+<span id="cb2-23"><a href="#cb2-23"></a>            <span class="kw">when</span> <span class="st">&quot;111&quot;</span> <span class="ot">=&gt;</span> o <span class="ot">&lt;=</span> <span class="st">&quot;10000000&quot;</span>;</span>
+<span id="cb2-24"><a href="#cb2-24"></a>            <span class="kw">when</span> <span class="ot">others</span> <span class="ot">=&gt;</span> o <span class="ot">&lt;=</span> (<span class="ot">others</span> <span class="ot">=&gt;</span> <span class="bn">&#39;X&#39;</span>);</span>
+<span id="cb2-25"><a href="#cb2-25"></a>        <span class="kw">end case;</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a>    <span class="kw">end process</span>;</span>
+<span id="cb2-27"><a href="#cb2-27"></a><span class="er">end decoder8_behavioral;</span></span></code></pre></div>
+<h2 id="testbench-για-τον-decoder8">Testbench για τον <code>decoder8</code></h2>
+<p>Το testbench για το module είναι γραμμένο σε behavioral αρχιτεκτονική και αποτελείται από ένα <code>for</code> loop που ελέγχει την έξοδο του κυκλώματος για όλες τις τιμές του <code>sel</code> από το <code>000</code> έως το <code>111</code>.</p>
+<h3 id="κώδικας-vhdl-2">Κώδικας VHDL</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode vhdl"><code class="sourceCode vhdl"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span> ieee;</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">use</span> ieee<span class="ot">.</span>std_logic_1164<span class="ot">.</span>all;</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">use</span> ieee<span class="ot">.</span>numeric_std<span class="ot">.</span>all;</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">--use ieee.std_logic_arith.all;</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co">--use IEEE.std_logic_unsigned.all;</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="kw">entity</span> <span class="kw">testbench</span> <span class="kw">is</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="kw">end testbench;</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="kw">architecture</span> <span class="kw">tb</span> <span class="kw">of</span> <span class="kw">testbench</span> <span class="kw">is</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>    <span class="ot">signal</span> sel <span class="ot">:</span> <span class="dt">std_logic_vector</span>(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>);  <span class="co">-- inputs </span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>    <span class="ot">signal</span> o <span class="ot">:</span> <span class="dt">std_logic_vector</span>(<span class="dv">7</span> <span class="ot">downto</span> <span class="dv">0</span>);  <span class="co">-- outputs</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="kw">begin</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>    <span class="kw">UUT</span> <span class="ot">:</span> <span class="er">entity</span> <span class="er">work</span><span class="ot">.</span><span class="er">decoder8</span> <span class="kw">port map (</span>sel <span class="ot">=&gt;</span> sel<span class="ot">,</span> o <span class="ot">=&gt;</span> o);</span>
+<span id="cb3-16"><a href="#cb3-16"></a>    <span class="kw">process</span> <span class="kw">is</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a>    <span class="kw">begin</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a>    sel <span class="ot">&lt;=</span> <span class="st">&quot;000&quot;</span>;</span>
+<span id="cb3-19"><a href="#cb3-19"></a>    <span class="kw">for</span> i <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">7</span> <span class="kw">loop</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a>        sel <span class="ot">&lt;=</span> <span class="dt">std_logic_vector</span>(to_unsigned(i<span class="ot">,</span><span class="dv">3</span>));</span>
+<span id="cb3-21"><a href="#cb3-21"></a>        <span class="kw">wait</span> <span class="kw">for</span> <span class="dv">10</span> <span class="dt">ns</span>;</span>
+<span id="cb3-22"><a href="#cb3-22"></a>        <span class="co">--assert o = std_logic_vector(shift_left(unsigned(&quot;00000001&quot;),i)); </span></span>
+<span id="cb3-23"><a href="#cb3-23"></a>    <span class="kw">end loop</span>;</span>
+<span id="cb3-24"><a href="#cb3-24"></a>    <span class="kw">wait</span>;</span>
+<span id="cb3-25"><a href="#cb3-25"></a>    <span class="kw">end process</span>;     </span>
+<span id="cb3-26"><a href="#cb3-26"></a><span class="er">end tb ;</span></span></code></pre></div>
+<!-- ![](img/decoder.png) -->
+<h1 id="β.2">Β.2</h1>
+<p>Σχεδιάστηκε καταχωρητής ολίσθησης των 4 bits με παράλληλη φόρτωση. Το σήμα <code>pl</code> καθορίζει την παράλληλη φόρτωση και έχει προεταιρότητα. Αν δεν γίνεται παράλληλη φόρτωση τότε ανάλογα με το <code>en</code> γίνεται ολίσθηση. Υπάρχουν ακόμα τα σήματα <code>si</code> και <code>so</code> και το <code>rst</code> που μηδενίζει ασύγχρονα τα flip-flops. Το κύκλωμα έχει είσοδο ρολογιού <code>clk</code> στου οποίου στις θετικές ακμές γίνεται ενημέρωση του καταχωρητή. Το <code>rst</code> επειδή είναι ασύγχρονο σήμα παρακάμπτει το ρολόι επειδή ο έλεγχος της τιμής του γίνεται έξω από τον έλεγχο για θετικές ακμές ρολογιού.</p>
+<p>Προστέθηκε το σήμα <code>direction</code> το οποίο καθορίζει τη φορά της ολίσθησης. Αν το <code>direction</code> είναι <code>0</code> τότε γίνεται δεξιά ολίσθηση ενώ αν είναι <code>1</code> γίνεται αριστερή ολίσθηση. Ο έλεγχος για την τιμή του <code>direction</code> γίνεται στο <code>edge: process</code> με ένα <code>if</code> καθώς και στο τέλος του κώδικα για να καθοριστεί ποια τιμή θα πάρει το <code>so</code> (serial output).</p>
+<p>Παρακάτω φαίνεται το RTL σχηματικό. Η διαφορά του με το σχηματικό που δεν έχει το σήμα <code>direction</code> είναι ουσιαστικά 2 πολυπλέκτες οι οποίοι έχουν είσοδο επιλογής το <code>direction</code>. Ο πρώτος καθορίζει το αν το <code>si</code> θα είναι το LSB (left shift) ή το MSB (right shift) και ο δεύτερος αν το <code>so</code> θα είναι το MSB (left shift) ή το LSB (right shift).</p>
+<p><img src="img/shift_rtl.jpg" /></p>
+<h3 id="κώδικας-vhdl-3">Κώδικας VHDL</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode vhdl"><code class="sourceCode vhdl"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">library</span> IEEE;</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">use</span> IEEE<span class="ot">.</span>std_logic_1164<span class="ot">.</span>all;</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="kw">entity</span> <span class="kw">rshift_reg3</span> <span class="kw">is</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>    <span class="kw">port</span> (</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    clk<span class="ot">,</span>rst<span class="ot">,</span>si<span class="ot">,</span>en<span class="ot">,</span>pl<span class="ot">,</span>direction<span class="ot">:</span> <span class="kw">in</span> <span class="dt">std_logic</span>;</span>
+<span id="cb4-6"><a href="#cb4-6"></a>    din<span class="ot">:</span> <span class="kw">in</span> <span class="dt">std_logic_vector</span>(<span class="dv">3</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb4-7"><a href="#cb4-7"></a>    so<span class="ot">:</span> <span class="kw">out</span> <span class="dt">std_logic</span>);</span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="kw">end rshift_reg3;</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="kw">architecture</span> <span class="kw">rtl</span> <span class="kw">of</span> <span class="kw">rshift_reg3</span> <span class="kw">is</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>    <span class="ot">signal</span> dff<span class="ot">:</span> <span class="dt">std_logic_vector</span>(<span class="dv">3</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="kw">begin</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>    <span class="kw">edge</span><span class="ot">:</span> <span class="kw">process</span> (clk<span class="ot">,</span>rst)</span>
+<span id="cb4-14"><a href="#cb4-14"></a>    <span class="kw">begin</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>        <span class="kw">if</span> rst<span class="ot">=</span><span class="bn">&#39;0&#39;</span> <span class="kw">then</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a>            dff<span class="ot">&lt;=</span>(<span class="ot">others=&gt;</span><span class="bn">&#39;0&#39;</span>);</span>
+<span id="cb4-17"><a href="#cb4-17"></a>        <span class="kw">elsif</span> clk<span class="bn">&#39;event</span> <span class="kw">and</span> clk<span class="ot">=</span><span class="bn">&#39;1&#39;</span> <span class="kw">then</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a>            <span class="kw">if</span> pl<span class="ot">=</span><span class="bn">&#39;1&#39;</span> <span class="kw">then</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a>                dff<span class="ot">&lt;=</span>din;</span>
+<span id="cb4-20"><a href="#cb4-20"></a>            <span class="kw">elsif</span> en<span class="ot">=</span><span class="bn">&#39;1&#39;</span> <span class="kw">then</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a>                <span class="kw">if</span> direction<span class="ot">=</span><span class="bn">&#39;0&#39;</span> <span class="kw">then</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a>                    dff <span class="ot">&lt;=</span> si <span class="ot">&amp;</span> dff(<span class="dv">3</span> <span class="ot">downto</span> <span class="dv">1</span>);</span>
+<span id="cb4-23"><a href="#cb4-23"></a>                <span class="kw">else</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a>                    dff <span class="ot">&lt;=</span> dff(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>) <span class="ot">&amp;</span> si;</span>
+<span id="cb4-25"><a href="#cb4-25"></a>                <span class="kw">end if;</span></span>
+<span id="cb4-26"><a href="#cb4-26"></a>            <span class="kw">end if;</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a>        <span class="kw">end if;</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a>    <span class="kw">end process</span>;</span>
+<span id="cb4-29"><a href="#cb4-29"></a></span>
+<span id="cb4-30"><a href="#cb4-30"></a>    <span class="kw">with</span> direction <span class="kw">select</span> so <span class="ot">&lt;=</span> </span>
+<span id="cb4-31"><a href="#cb4-31"></a>        dff(<span class="dv">0</span>) <span class="kw">when</span> <span class="bn">&#39;0&#39;</span><span class="ot">,</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a>        dff(<span class="dv">3</span>) <span class="kw">when</span> <span class="bn">&#39;1&#39;</span><span class="ot">,</span></span>
+<span id="cb4-33"><a href="#cb4-33"></a>        <span class="bn">&#39;X&#39;</span> <span class="kw">when</span> <span class="ot">others</span>;</span>
+<span id="cb4-34"><a href="#cb4-34"></a><span class="er">end rtl;</span></span></code></pre></div>
+<h2 id="testbench">Testbench</h2>
+<p>Το testbench παράγει όλες τις δυνατές τιμές για όλα τα σήματα που μας ενδιαφέρουν (με τα nested for loops). Επίσης έχει ένα <code>process</code> clocking το οποίο προσομοιώνει το ρολόι. Σε κάθε <code>clock_period</code> το ρολόι είναι <code>1</code> στο πρώτο μισό της περιόδου και <code>0</code> στο δεύτερο μισό.</p>
+<h3 id="κώδικας-vhdl-4">Κώδικας VHDL</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode vhdl"><code class="sourceCode vhdl"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">library</span> ieee;</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">use</span> ieee<span class="ot">.</span>std_logic_1164<span class="ot">.</span>all;</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">use</span> ieee<span class="ot">.</span>numeric_std<span class="ot">.</span>all;</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="kw">entity</span> <span class="kw">testbench_shift</span> <span class="kw">is</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="kw">end testbench_shift;</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="kw">architecture</span> <span class="kw">tb</span> <span class="kw">of</span> <span class="kw">testbench_shift</span> <span class="kw">is</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>    <span class="ot">signal</span> clk<span class="ot">,</span>rst<span class="ot">,</span>si<span class="ot">,</span>en<span class="ot">,</span>pl<span class="ot">,</span>direction<span class="ot">,</span>so<span class="ot">:</span> <span class="dt">std_logic</span>;</span>
+<span id="cb5-10"><a href="#cb5-10"></a>    <span class="ot">signal</span> din<span class="ot">:</span> <span class="dt">std_logic_vector</span>(<span class="dv">3</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb5-11"><a href="#cb5-11"></a>    <span class="ot">constant</span> clock_period<span class="ot">:</span> <span class="dt">time</span> <span class="ot">:=</span> <span class="dv">10</span> <span class="dt">ns</span>;</span>
+<span id="cb5-12"><a href="#cb5-12"></a>    <span class="ot">constant</span> clock_num<span class="ot">:</span> <span class="dt">integer</span> <span class="ot">:=</span> <span class="dv">512</span>;</span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="kw">begin</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>    <span class="kw">mpampis</span><span class="ot">:</span> <span class="er">entity</span> <span class="er">work</span><span class="ot">.</span><span class="er">rshift_reg3</span>  <span class="kw">port map (</span>clk <span class="ot">=&gt;</span> clk<span class="ot">,</span>rst <span class="ot">=&gt;</span> rst<span class="ot">,</span>si <span class="ot">=&gt;</span>si<span class="ot">,</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a>    en<span class="ot">=&gt;</span>en<span class="ot">,</span>pl <span class="ot">=&gt;</span> pl<span class="ot">,</span>direction <span class="ot">=&gt;</span> direction<span class="ot">,</span>so<span class="ot">=&gt;</span>so<span class="ot">,</span>din<span class="ot">=&gt;</span>din);</span>
+<span id="cb5-16"><a href="#cb5-16"></a></span>
+<span id="cb5-17"><a href="#cb5-17"></a>    <span class="kw">process</span> <span class="kw">is</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a>    <span class="kw">begin</span></span>
+<span id="cb5-19"><a href="#cb5-19"></a>    en <span class="ot">&lt;=</span> <span class="bn">&#39;1&#39;</span>;</span>
+<span id="cb5-20"><a href="#cb5-20"></a>    rst <span class="ot">&lt;=</span> <span class="bn">&#39;0&#39;</span>;</span>
+<span id="cb5-21"><a href="#cb5-21"></a>    si <span class="ot">&lt;=</span> <span class="bn">&#39;0&#39;</span>;</span>
+<span id="cb5-22"><a href="#cb5-22"></a>    direction <span class="ot">&lt;=</span> <span class="bn">&#39;0&#39;</span>;</span>
+<span id="cb5-23"><a href="#cb5-23"></a>    pl <span class="ot">&lt;=</span> <span class="bn">&#39;0&#39;</span>;</span>
+<span id="cb5-24"><a href="#cb5-24"></a>    <span class="kw">for</span> i0 <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">1</span> <span class="kw">loop</span></span>
+<span id="cb5-25"><a href="#cb5-25"></a>        <span class="kw">for</span> i1 <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">1</span> <span class="kw">loop</span></span>
+<span id="cb5-26"><a href="#cb5-26"></a>            <span class="kw">for</span> i2 <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">1</span> <span class="kw">loop</span></span>
+<span id="cb5-27"><a href="#cb5-27"></a>                <span class="kw">for</span> i3 <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">1</span> <span class="kw">loop</span></span>
+<span id="cb5-28"><a href="#cb5-28"></a>                    <span class="kw">for</span> i4 <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">15</span> <span class="kw">loop</span></span>
+<span id="cb5-29"><a href="#cb5-29"></a>                        din <span class="ot">&lt;=</span> <span class="dt">std_logic_vector</span>(to_unsigned(i4<span class="ot">,</span><span class="dv">4</span>));</span>
+<span id="cb5-30"><a href="#cb5-30"></a>                        <span class="kw">wait</span> <span class="kw">for</span> clock_period;</span>
+<span id="cb5-31"><a href="#cb5-31"></a>                    <span class="kw">end loop</span>;</span>
+<span id="cb5-32"><a href="#cb5-32"></a>                    pl <span class="ot">&lt;=</span> <span class="kw">not</span> pl;</span>
+<span id="cb5-33"><a href="#cb5-33"></a>                <span class="kw">end loop</span>;</span>
+<span id="cb5-34"><a href="#cb5-34"></a>                direction <span class="ot">&lt;=</span> <span class="kw">not</span> direction;</span>
+<span id="cb5-35"><a href="#cb5-35"></a>            <span class="kw">end loop</span>;</span>
+<span id="cb5-36"><a href="#cb5-36"></a>            si <span class="ot">&lt;=</span> <span class="kw">not</span> si;</span>
+<span id="cb5-37"><a href="#cb5-37"></a>        <span class="kw">end loop</span>;</span>
+<span id="cb5-38"><a href="#cb5-38"></a>        rst <span class="ot">&lt;=</span> <span class="kw">not</span> rst;</span>
+<span id="cb5-39"><a href="#cb5-39"></a>    <span class="kw">end loop</span>;</span>
+<span id="cb5-40"><a href="#cb5-40"></a>    <span class="kw">wait</span>;</span>
+<span id="cb5-41"><a href="#cb5-41"></a>    <span class="kw">end process</span>;</span>
+<span id="cb5-42"><a href="#cb5-42"></a></span>
+<span id="cb5-43"><a href="#cb5-43"></a>    <span class="kw">clocking</span><span class="ot">:</span> <span class="kw">process</span></span>
+<span id="cb5-44"><a href="#cb5-44"></a>    <span class="kw">begin</span></span>
+<span id="cb5-45"><a href="#cb5-45"></a>        <span class="kw">for</span> i <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> clock_num <span class="kw">loop</span></span>
+<span id="cb5-46"><a href="#cb5-46"></a>            clk <span class="ot">&lt;=</span> <span class="bn">&#39;1&#39;</span><span class="ot">,</span> <span class="bn">&#39;0&#39;</span> <span class="kw">after</span> clock_period <span class="ot">/</span> <span class="dv">2</span>;</span>
+<span id="cb5-47"><a href="#cb5-47"></a>            <span class="kw">wait</span> <span class="kw">for</span> clock_period;</span>
+<span id="cb5-48"><a href="#cb5-48"></a>        <span class="kw">end loop</span>;</span>
+<span id="cb5-49"><a href="#cb5-49"></a>    <span class="kw">wait</span>;</span>
+<span id="cb5-50"><a href="#cb5-50"></a>    <span class="kw">end process</span>;</span>
+<span id="cb5-51"><a href="#cb5-51"></a><span class="er">end tb;</span></span></code></pre></div>
+<h1 id="β.3">Β.3</h1>
+<h2 id="μετρητής-χωρίς-όριο">Μετρητής χωρίς όριο</h2>
+<p>Το κύκλωμα έχει ρολόι <code>clk</code>, ασύγχρονο μηδενισμό <code>resetn</code>, <code>count_en</code> σήμα επίτρεψης. Επίσης έχει έξοδο <code>sum</code> που είναι ο αριθμός και <code>cout</code> που είναι το κρατούμενο (δηλαδή δείχνει αν έχουμε φτάσει στον τελευταίο αριθμό ή όχι).</p>
+<p>Προστέθηκε το σήμα <code>direction</code> που καθορίζει αν θα είναι up ή down η μέτρηση. - Για <code>direction</code> <code>0</code> η μέτρηση γίνεται προς τα πάνω. Όταν φτάσουμε στην τιμή 7 επιστρέφουμε στο 0. - Για <code>direction</code> <code>1</code> η μέτρηση γίνεται προς τα κάτω. Όταν φτάσουμε στην τιμή 0 επιστρέφουμε στο 7.</p>
+<p>Ο έλεγχος για την τιμή του <code>direction</code> γίνεται με ένα <code>case</code>.</p>
+<p>Ακολουθεί το RTL σχηματικό του κυκλώματος. Η διαφορά του κυκλώματος αυτού από το κύκλωμα μόνο με up μέτρηση είναι ότι γίνεται και αφαίρεση εκτός από πρόσθεση και το αποτέλεσμα εξαρτάται από την τιμή του <code>direction</code>. Επομένως συμπεραίνουμε ότι σε επίπεδο RTL λειτουργεί ορθά το κύκλωμα.</p>
+<p><img src="img/counter_nolimit_rtl.jpg" /></p>
+<h3 id="κώδικας-vhdl-5">Κώδικας VHDL</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode vhdl"><code class="sourceCode vhdl"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">library</span> IEEE;</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw">use</span> IEEE<span class="ot">.</span>std_logic_1164<span class="ot">.</span>all;</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="kw">use</span> IEEE<span class="ot">.</span>std_logic_unsigned<span class="ot">.</span>all;</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="kw">entity</span> <span class="kw">count3_nolimit</span> <span class="kw">is</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>    <span class="kw">port</span>(clk<span class="ot">,</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>    resetn<span class="ot">,</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>    count_en<span class="ot">,</span>direction<span class="ot">:</span> <span class="kw">in</span> <span class="dt">std_logic</span>;</span>
+<span id="cb6-9"><a href="#cb6-9"></a>    sum<span class="ot">:</span> <span class="kw">out</span> <span class="dt">std_logic_vector</span>(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb6-10"><a href="#cb6-10"></a>    cout<span class="ot">:</span> <span class="kw">out</span> <span class="dt">std_logic</span>);</span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="kw">end;</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="kw">architecture</span> <span class="kw">rtl_nolimit</span> <span class="kw">of</span> <span class="kw">count3_nolimit</span> <span class="kw">is</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a>    <span class="ot">signal</span> count <span class="ot">:</span> <span class="dt">std_logic_vector</span>(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="kw">begin</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a>    <span class="kw">process</span>(clk<span class="ot">,</span> resetn)</span>
+<span id="cb6-17"><a href="#cb6-17"></a>    <span class="kw">begin</span></span>
+<span id="cb6-18"><a href="#cb6-18"></a>        <span class="kw">if</span> resetn<span class="ot">=</span><span class="bn">&#39;0&#39;</span> <span class="kw">then</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a>            count <span class="ot">&lt;=</span> (<span class="ot">others=&gt;</span><span class="bn">&#39;0&#39;</span>);</span>
+<span id="cb6-20"><a href="#cb6-20"></a>        <span class="kw">elsif</span> <span class="kw">rising_edge</span>(clk) <span class="kw">then</span></span>
+<span id="cb6-21"><a href="#cb6-21"></a>            <span class="kw">if</span> count_en <span class="ot">=</span> <span class="bn">&#39;1&#39;</span> <span class="kw">then</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a>                <span class="kw">case</span> direction <span class="kw">is</span></span>
+<span id="cb6-23"><a href="#cb6-23"></a>                    <span class="kw">when</span> <span class="bn">&#39;0&#39;</span> <span class="ot">=&gt;</span> </span>
+<span id="cb6-24"><a href="#cb6-24"></a>                        <span class="kw">if</span> count <span class="ot">/=</span> <span class="dv">7</span> <span class="kw">then</span></span>
+<span id="cb6-25"><a href="#cb6-25"></a>                            count <span class="ot">&lt;=</span> count<span class="ot">+</span><span class="dv">1</span>;</span>
+<span id="cb6-26"><a href="#cb6-26"></a>                        <span class="kw">else</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a>                            count<span class="ot">&lt;=</span>(<span class="ot">others=&gt;</span><span class="bn">&#39;0&#39;</span>);</span>
+<span id="cb6-28"><a href="#cb6-28"></a>                        <span class="kw">end if;</span></span>
+<span id="cb6-29"><a href="#cb6-29"></a>                    <span class="kw">when</span> <span class="bn">&#39;1&#39;</span> <span class="ot">=&gt;</span> </span>
+<span id="cb6-30"><a href="#cb6-30"></a>                        <span class="kw">if</span> count <span class="ot">=</span> <span class="st">&quot;000&quot;</span> <span class="kw">then</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a>                            count <span class="ot">&lt;=</span> <span class="st">&quot;111&quot;</span>;</span>
+<span id="cb6-32"><a href="#cb6-32"></a>                        <span class="kw">else</span></span>
+<span id="cb6-33"><a href="#cb6-33"></a>                            count <span class="ot">&lt;=</span> count<span class="ot">-</span><span class="dv">1</span>;</span>
+<span id="cb6-34"><a href="#cb6-34"></a>                        <span class="kw">end if;</span></span>
+<span id="cb6-35"><a href="#cb6-35"></a>                    <span class="kw">when</span> <span class="ot">others</span> <span class="ot">=&gt;</span> count <span class="ot">&lt;=</span> (<span class="ot">others</span> <span class="ot">=&gt;</span> <span class="bn">&#39;X&#39;</span>);</span>
+<span id="cb6-36"><a href="#cb6-36"></a>                <span class="kw">end case;</span></span>
+<span id="cb6-37"><a href="#cb6-37"></a>            <span class="kw">end if;</span></span>
+<span id="cb6-38"><a href="#cb6-38"></a>        <span class="kw">end if;</span></span>
+<span id="cb6-39"><a href="#cb6-39"></a>    <span class="kw">end process</span>;</span>
+<span id="cb6-40"><a href="#cb6-40"></a>    sum <span class="ot">&lt;=</span> count;</span>
+<span id="cb6-41"><a href="#cb6-41"></a>    cout <span class="ot">&lt;=</span> <span class="bn">&#39;1&#39;</span> <span class="kw">when</span> count<span class="ot">=</span><span class="dv">7</span> <span class="kw">and</span> count_en<span class="ot">=</span><span class="bn">&#39;1&#39;</span> else <span class="bn">&#39;0&#39;</span>;</span>
+<span id="cb6-42"><a href="#cb6-42"></a><span class="kw">end;</span></span></code></pre></div>
+<h2 id="μετρητής-με-όριο">Μετρητής με όριο</h2>
+<p>Η περίγραφη του κυκλώματος με όριο είναι παρόμοια με την προηγούμενη. Απλώς αντικαθιστούμε το <code>7</code> που ήταν το όριο (δηλαδή μεγαλύτερος επιτρεπόμενος αριθμός) με το σήμα εισόδου <code>limit</code> των 3 bits.</p>
+<p>Ακολουθεί το RTL σχηματικό. Το μόνο σημείο στο οποίο διαφέρει είναι η ύπαρξη του <code>limit</code> το οποίο καθορίζει αν θα γίνει επαναφορά από την αρχή του μετρήματος. Στον μετρητή χωρίς όριο η τιμή του <code>limit</code> ήταν ουσιαστικά το <code>7</code> δηλαδή <code>111</code>.</p>
+<p><img src="img/counter_withlimit_rtl.jpg" /></p>
+<h3 id="κώδικας-vhdl-6">Κώδικας VHDL</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode vhdl"><code class="sourceCode vhdl"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">library</span> IEEE;</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">use</span> IEEE<span class="ot">.</span>std_logic_1164<span class="ot">.</span>all;</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="kw">use</span> IEEE<span class="ot">.</span>std_logic_unsigned<span class="ot">.</span>all;</span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="kw">entity</span> <span class="kw">count3</span> <span class="kw">is</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="kw">port</span>( clk<span class="ot">,</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>    resetn<span class="ot">,</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>    count_en<span class="ot">,</span>direction<span class="ot">:</span> <span class="kw">in</span> <span class="dt">std_logic</span>;</span>
+<span id="cb7-9"><a href="#cb7-9"></a>    limit<span class="ot">:</span> <span class="kw">in</span> <span class="dt">std_logic_vector</span>(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb7-10"><a href="#cb7-10"></a>    sum<span class="ot">:</span> <span class="kw">out</span> <span class="dt">std_logic_vector</span>(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb7-11"><a href="#cb7-11"></a>    cout<span class="ot">:</span> <span class="kw">out</span> <span class="dt">std_logic</span>);</span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="kw">end;</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="kw">architecture</span> <span class="kw">rtl_limit</span> <span class="kw">of</span> <span class="kw">count3</span> <span class="kw">is</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a>    <span class="ot">signal</span> count <span class="ot">:</span> <span class="dt">std_logic_vector</span>(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="kw">begin</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a>    <span class="kw">process</span>(clk<span class="ot">,</span> resetn)</span>
+<span id="cb7-18"><a href="#cb7-18"></a>    <span class="kw">begin</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a>        <span class="kw">if</span> resetn<span class="ot">=</span><span class="bn">&#39;0&#39;</span> <span class="kw">then</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a>            count <span class="ot">&lt;=</span> (<span class="ot">others=&gt;</span><span class="bn">&#39;0&#39;</span>);</span>
+<span id="cb7-21"><a href="#cb7-21"></a>        <span class="kw">elsif</span> <span class="kw">rising_edge</span>(clk) <span class="kw">then</span></span>
+<span id="cb7-22"><a href="#cb7-22"></a>            <span class="kw">if</span> count_en <span class="ot">=</span> <span class="bn">&#39;1&#39;</span> <span class="kw">then</span></span>
+<span id="cb7-23"><a href="#cb7-23"></a>                </span>
+<span id="cb7-24"><a href="#cb7-24"></a>                <span class="kw">case</span> direction <span class="kw">is</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a>                        <span class="kw">when</span> <span class="bn">&#39;0&#39;</span> <span class="ot">=&gt;</span> </span>
+<span id="cb7-26"><a href="#cb7-26"></a>                            <span class="kw">if</span> count <span class="ot">/=</span> limit <span class="kw">then</span></span>
+<span id="cb7-27"><a href="#cb7-27"></a>                                count <span class="ot">&lt;=</span> count<span class="ot">+</span><span class="dv">1</span>;</span>
+<span id="cb7-28"><a href="#cb7-28"></a>                            <span class="kw">else</span></span>
+<span id="cb7-29"><a href="#cb7-29"></a>                                count <span class="ot">&lt;=</span>(<span class="ot">others=&gt;</span><span class="bn">&#39;0&#39;</span>);</span>
+<span id="cb7-30"><a href="#cb7-30"></a>                            <span class="kw">end if;</span></span>
+<span id="cb7-31"><a href="#cb7-31"></a>                        <span class="kw">when</span> <span class="bn">&#39;1&#39;</span> <span class="ot">=&gt;</span> </span>
+<span id="cb7-32"><a href="#cb7-32"></a>                            <span class="kw">if</span> count <span class="ot">=</span> <span class="st">&quot;000&quot;</span> <span class="kw">then</span></span>
+<span id="cb7-33"><a href="#cb7-33"></a>                                count <span class="ot">&lt;=</span> limit;</span>
+<span id="cb7-34"><a href="#cb7-34"></a>                            <span class="kw">else</span></span>
+<span id="cb7-35"><a href="#cb7-35"></a>                                count <span class="ot">&lt;=</span> count<span class="ot">-</span><span class="dv">1</span>;</span>
+<span id="cb7-36"><a href="#cb7-36"></a>                            <span class="kw">end if;</span></span>
+<span id="cb7-37"><a href="#cb7-37"></a>                        <span class="kw">when</span> <span class="ot">others</span> <span class="ot">=&gt;</span> count <span class="ot">&lt;=</span> (<span class="ot">others</span> <span class="ot">=&gt;</span> <span class="bn">&#39;X&#39;</span>);</span>
+<span id="cb7-38"><a href="#cb7-38"></a>                    <span class="kw">end case;</span></span>
+<span id="cb7-39"><a href="#cb7-39"></a></span>
+<span id="cb7-40"><a href="#cb7-40"></a>            <span class="kw">end if;</span></span>
+<span id="cb7-41"><a href="#cb7-41"></a>        <span class="kw">end if;</span></span>
+<span id="cb7-42"><a href="#cb7-42"></a>    <span class="kw">end process</span>;</span>
+<span id="cb7-43"><a href="#cb7-43"></a>    sum <span class="ot">&lt;=</span> count;</span>
+<span id="cb7-44"><a href="#cb7-44"></a>    cout <span class="ot">&lt;=</span> <span class="bn">&#39;1&#39;</span> <span class="kw">when</span> count<span class="ot">=</span><span class="dv">7</span> <span class="kw">and</span> count_en<span class="ot">=</span><span class="bn">&#39;1&#39;</span> else <span class="bn">&#39;0&#39;</span>;</span>
+<span id="cb7-45"><a href="#cb7-45"></a><span class="kw">end;</span></span></code></pre></div>
+<h2 id="testbench-για-τον-counter">Testbench για τον <code>counter</code></h2>
+<p>Το testbench και πάλι περνάει από όλες τις τιμές με for loops και παράγει ένα ρολόι.</p>
+<h3 id="κώδικας-vhdl-7">Κώδικας VHDL</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode vhdl"><code class="sourceCode vhdl"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">library</span> ieee;</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="kw">use</span> ieee<span class="ot">.</span>std_logic_1164<span class="ot">.</span>all;</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="kw">use</span> ieee<span class="ot">.</span>numeric_std<span class="ot">.</span>all;</span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="kw">entity</span> <span class="kw">testbench_counter</span> <span class="kw">is</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="kw">end testbench_counter;</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="kw">architecture</span> <span class="kw">tb</span> <span class="kw">of</span> <span class="kw">testbench_counter</span> <span class="kw">is</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>    <span class="ot">signal</span> clk<span class="ot">,</span>resetn<span class="ot">,</span>count_en<span class="ot">,</span>direction<span class="ot">,</span>cout<span class="ot">:</span> <span class="dt">std_logic</span>;</span>
+<span id="cb8-10"><a href="#cb8-10"></a>    <span class="ot">signal</span> limit<span class="ot">:</span> <span class="dt">std_logic_vector</span>(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb8-11"><a href="#cb8-11"></a>    <span class="ot">signal</span> sum<span class="ot">:</span> <span class="dt">std_logic_vector</span>(<span class="dv">2</span> <span class="ot">downto</span> <span class="dv">0</span>);</span>
+<span id="cb8-12"><a href="#cb8-12"></a>    <span class="ot">constant</span> clock_period<span class="ot">:</span> <span class="dt">time</span> <span class="ot">:=</span> <span class="dv">10</span> <span class="dt">ns</span>;</span>
+<span id="cb8-13"><a href="#cb8-13"></a>    <span class="ot">constant</span> clock_num<span class="ot">:</span> <span class="dt">integer</span> <span class="ot">:=</span> <span class="dv">2048</span>;</span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="kw">begin</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>    <span class="kw">UUT</span><span class="ot">:</span> <span class="er">entity</span> <span class="er">work</span><span class="ot">.</span><span class="er">count3</span>  <span class="kw">port map (</span>clk <span class="ot">=&gt;</span> clk<span class="ot">,</span>resetn <span class="ot">=&gt;</span> resetn<span class="ot">,</span>count_en<span class="ot">=&gt;</span>count_en<span class="ot">,</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a>    direction<span class="ot">=&gt;</span>direction<span class="ot">,</span>cout <span class="ot">=&gt;</span> cout<span class="ot">,</span>limit <span class="ot">=&gt;</span> limit<span class="ot">,</span> sum <span class="ot">=&gt;</span> sum);</span>
+<span id="cb8-17"><a href="#cb8-17"></a></span>
+<span id="cb8-18"><a href="#cb8-18"></a>    <span class="kw">process</span> <span class="kw">is</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a>    <span class="kw">begin</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a>    resetn <span class="ot">&lt;=</span> <span class="bn">&#39;0&#39;</span>;</span>
+<span id="cb8-21"><a href="#cb8-21"></a>    count_en <span class="ot">&lt;=</span> <span class="bn">&#39;0&#39;</span>;</span>
+<span id="cb8-22"><a href="#cb8-22"></a>    direction <span class="ot">&lt;=</span> <span class="bn">&#39;0&#39;</span>;</span>
+<span id="cb8-23"><a href="#cb8-23"></a>    <span class="kw">for</span> i0 <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">1</span> <span class="kw">loop</span></span>
+<span id="cb8-24"><a href="#cb8-24"></a>        <span class="kw">for</span> i1 <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">1</span> <span class="kw">loop</span></span>
+<span id="cb8-25"><a href="#cb8-25"></a>            <span class="kw">for</span> i2 <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">1</span> <span class="kw">loop</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a>                    <span class="kw">for</span> i3 <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">7</span> <span class="kw">loop</span></span>
+<span id="cb8-27"><a href="#cb8-27"></a>                        limit <span class="ot">&lt;=</span> <span class="dt">std_logic_vector</span>(to_unsigned(i3<span class="ot">,</span><span class="dv">3</span>));</span>
+<span id="cb8-28"><a href="#cb8-28"></a>                        <span class="kw">for</span> i4 <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> <span class="dv">10</span> <span class="kw">loop</span></span>
+<span id="cb8-29"><a href="#cb8-29"></a>                            <span class="kw">wait</span> <span class="kw">for</span> clock_period;</span>
+<span id="cb8-30"><a href="#cb8-30"></a>                        <span class="kw">end loop</span>;</span>
+<span id="cb8-31"><a href="#cb8-31"></a>                    <span class="kw">end loop</span>;</span>
+<span id="cb8-32"><a href="#cb8-32"></a>                direction <span class="ot">&lt;=</span> <span class="kw">not</span> direction;</span>
+<span id="cb8-33"><a href="#cb8-33"></a>            <span class="kw">end loop</span>;</span>
+<span id="cb8-34"><a href="#cb8-34"></a>            count_en <span class="ot">&lt;=</span> <span class="kw">not</span> count_en;</span>
+<span id="cb8-35"><a href="#cb8-35"></a>        <span class="kw">end loop</span>;</span>
+<span id="cb8-36"><a href="#cb8-36"></a>        resetn <span class="ot">&lt;=</span> <span class="kw">not</span> resetn;</span>
+<span id="cb8-37"><a href="#cb8-37"></a>    <span class="kw">end loop</span>;</span>
+<span id="cb8-38"><a href="#cb8-38"></a>    <span class="kw">wait</span>;</span>
+<span id="cb8-39"><a href="#cb8-39"></a>    <span class="kw">end process</span>;</span>
+<span id="cb8-40"><a href="#cb8-40"></a></span>
+<span id="cb8-41"><a href="#cb8-41"></a>    <span class="kw">clocking</span><span class="ot">:</span> <span class="kw">process</span></span>
+<span id="cb8-42"><a href="#cb8-42"></a>    <span class="kw">begin</span></span>
+<span id="cb8-43"><a href="#cb8-43"></a>        <span class="kw">for</span> i <span class="kw">in</span> <span class="dv">0</span> <span class="ot">to</span> clock_num <span class="kw">loop</span></span>
+<span id="cb8-44"><a href="#cb8-44"></a>            clk <span class="ot">&lt;=</span> <span class="bn">&#39;1&#39;</span><span class="ot">,</span> <span class="bn">&#39;0&#39;</span> <span class="kw">after</span> clock_period <span class="ot">/</span> <span class="dv">2</span>;</span>
+<span id="cb8-45"><a href="#cb8-45"></a>            <span class="kw">wait</span> <span class="kw">for</span> clock_period;</span>
+<span id="cb8-46"><a href="#cb8-46"></a>        <span class="kw">end loop</span>;</span>
+<span id="cb8-47"><a href="#cb8-47"></a>    <span class="kw">wait</span>;</span>
+<span id="cb8-48"><a href="#cb8-48"></a>    <span class="kw">end process</span>;</span>
+<span id="cb8-49"><a href="#cb8-49"></a><span class="er">end tb;</span></span></code></pre></div>
+</body>
+</html>
