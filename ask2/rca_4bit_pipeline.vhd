@@ -32,8 +32,6 @@ signal b_regs : register_arr;
 
 signal c_regs : std_logic_vector(4 downto 0);
 
---shared variable i : integer;
-
 begin
 f1:for k in 0 to 3 generate
         u1:full_adder_bhv_seq port map(A=>a_regs(k)(k), B=>b_regs(k)(k), Cin=>c_regs(k), S=>a_regs(k+1)(k), Cout=>c_regs(k+1), clk=>clk);
@@ -42,31 +40,26 @@ process(clk)
 begin
 
 
-
+a_regs(0) <= A;
+b_regs(0) <= B;
+c_regs(0) <= Cin;
 if rising_edge(clk) then
-    a_regs(0) <= A;
-    b_regs(0) <= B;
-    c_regs(0) <= Cin;
+    
     if rst = '1' then
         c_regs <= (others=>'0');
         for i in 0 to 3 loop
             a_regs(i) <= (others=>'0');
             b_regs(i) <= (others=>'0');
         end loop;
-    else
-        
-        
-        for i in 1 to 4 loop
+    else  
+        for ii in 1 to 4 loop
             for j in 0 to 3 loop
---                if (i/=(j+1)) then
-                    a_regs(i)(j) <= a_regs(i-1)(j);
-                    b_regs(i)(j) <= b_regs(i-1)(j); 
---                end if;
-            end loop;
-            
-        end loop;
-        
-        
+                if (ii/=(j+1)) then
+                    a_regs(ii)(j) <= a_regs(ii-1)(j);
+                    b_regs(ii)(j) <= b_regs(ii-1)(j); 
+                end if;
+            end loop;    
+        end loop; 
     end if;
 end if;
 end process;

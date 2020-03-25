@@ -15,12 +15,13 @@ end full_adder_bhv_seq;
 architecture Behavioral of full_adder_bhv_seq is
 signal tmp : std_logic_vector(1 downto 0);
 begin
-    S <= tmp(0);
-    Cout <= tmp(1);
+    
     process(clk)
     begin
         if (rising_edge(clk)) then
             tmp <= ('0'& A) + ('0'& B) +('0'& Cin);
         end if;
+        S <= tmp(0);
+        Cout <= tmp(1);
     end process;
 end Behavioral;
