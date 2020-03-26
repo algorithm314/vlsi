@@ -21,7 +21,7 @@ begin
         if (rising_edge(clk)) then
             tmp <= ('0'& A) + ('0'& B) +('0'& Cin);
         end if;
-        S <= tmp(0);
-        Cout <= tmp(1);
     end process;
+    S <= tmp(0);
+    Cout <= tmp(1);
 end Behavioral;
