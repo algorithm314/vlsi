@@ -7,7 +7,7 @@ end full_adder_bhv_seq_tb;
 architecture B of full_adder_bhv_seq_tb is
 -- inputs 
     signal A ,B : std_logic;
-    signal clk, Cin : std_logic;
+    signal clk, Cin, rst : std_logic;
 -- outputs
     signal S : std_logic;
     signal Cout : std_logic;
@@ -15,13 +15,14 @@ architecture B of full_adder_bhv_seq_tb is
     constant clock_period: time := 10 ns;
     constant clock_num: integer := 16;
 begin
-    UUT: entity work.full_adder_bhv_seq port map (A=>A, B=>B, Cin=>Cin, S=>S, Cout=>Cout, clk=>clk);
+    UUT: entity work.full_adder_bhv_seq port map (A=>A, B=>B, Cin=>Cin, S=>S, Cout=>Cout, rst=>rst, clk=>clk);
 
 	process
 	begin
 		A <= '0';
 		B <= '1';
 		Cin <= '0';
+		rst <= '1';
 		wait for clock_period;
 		wait for clock_period;
 		wait;
