@@ -19,8 +19,8 @@ end component;
 signal C: std_logic_vector(4 downto 0);
 begin
     C(0) <= Cin;
-    Cout <= C(4);
     f1:for k in 0 to 3 generate
         u1:full_adder_bhv port map(A=>A(k), B=>B(k), Cin=>C(k), S=>S(k), Cout=>C(k+1));
-    end generate f1; 
+    end generate f1;
+    Cout <= C(4);
 end structural;

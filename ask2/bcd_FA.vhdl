@@ -61,4 +61,5 @@ begin
     u2: entity work.AND2 port map(A=>sum(3),B=>sum(1),AnB=>o2);
     u3: entity work.OR3 port map(A=>o1,B=>o2,C=>int_cout,AoBoC=>Cint);
     adder2: entity work.rca_4bit_comb port map(A=>sum,B(3)=> '0',B(2)=>Cint,B(1)=>Cint,B(0)=>'0',Cin=>'0',S=>S);
+    Cout <= Cint;
 end structural;
