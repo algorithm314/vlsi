@@ -72,7 +72,23 @@ end process;
 
 end Behavioral;
 ```
+
+![](img/1_tb.png
+
 ## RTL 
 
 ![](img/1_rtl.png)
-d
+
+## Κρίσιμο Μονοπάτι 
+
+Το κρίσιμο μονοπάτι είναι είτε μεταξύ του `B` και του `CA` είτε μεταξύ του `A` και του `S`
+
+![](img/1_synthschem.png)
+
+Η μέγιστη καθυστέρηση είναι **θα συμπληρωθει** 
+
+![](img/1_criticalpath.png)
+
+## Κατανάλωση Πόρων FPGA
+
+![](img/1_fpgagraph.png) ![](img/1_fpgatable.png)
