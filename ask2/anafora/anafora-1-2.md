@@ -405,9 +405,11 @@ UUT: full_adder_structural port map (FA => FA,FB => FB,FC => FC,FS => FS,FCA => 
 end Structural;
 ```
 Όταν το `reset` = 1 τότε οι έξοδοι είναι 0. 
+
 ![](img/2aii_tb1.png)
 
 Όταν το `reset` γίνει 0 τότε οι έξοδοι λαμβάνουν τις αντίστοιχες τιμές τους ανάλογα με την είσοδο, μετά από έναν κύκλο καθυστέρησης.
+
 ![](img/2aii_tb2.png)
 
 ## RTL 
@@ -535,4 +537,147 @@ bhv_full_adder: full_adder_bhv port map
   
 end Behavioral;
 ``` 
+![](img/2bi_tb.png) 
+
+## RTL 
+Στο σχήμα είναι ξεκάθαρη η χρήση του τελεστή '+'.
+
+![](img/2bi_rtl.png)
+
+## Κρίσιμο Μονοπάτι 
+
+Το βιβαντο μου έχει θέμα, μου βγάζει πάρα πολυ μεγάλη καθυστέρηση στην έξοδο 
+
+## Κατανάλωση πόρων FPGA
+
+![](img/2bi_fpgagraph.png)
+![](img/2bi_fpgatable.png)
+
+## Ακολουθιακό Κύκλωμα 
+Όμοίως με το αντίστοιχο ερώτημα του 2α καλούμαστε να υλοποιήσουμε ακολουθιακό κύκλωμα πλήρους αθροιστή με σύγχρονο reset, αυτή τη φορά με behavioral περιγραφή. 
+
+## Κώδικας 
+
+```vhdl
+library IEEE;
+
+use IEEE.STD_LOGIC_1164.ALL;
+
+use ieee.numeric_std.all;
+
+use ieee.std_logic_unsigned.all;
+
+
+
+entity fa_bhv_s is
+
+    Port ( A : in STD_LOGIC;
+           B : in STD_LOGIC;
+           Cin : in STD_LOGIC;
+           clk : in STD_LOGIC;
+           rst : in STD_LOGIC;
+           S : out STD_LOGIC;
+           Cout : out STD_LOGIC);
+
+end fa_bhv_s;
+
+architecture Behavioral of fa_bhv_s is
+
+
+signal tmp : std_logic_vector(1 downto 0);
+begin
+    process(clk)
+    
+       begin
+   
+           if (rising_edge(clk)) then
+           if (rst = '1') then 
+           tmp(0) <= '0';
+           tmp(1) <= '0';
+           else
+            tmp <= ('0'& A) + ('0'& B) +('0'& Cin);
+           end if;
+             
+       end if;
+    end process;
+    
+        S <= tmp(0);
+     Cout <= tmp(1);
+end Behavioral;
+```
+## Testbench 
+```vhdl
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+
+entity fa_seq_tb_bhv is
+ --   Port ( );
+end fa_seq_tb_bhv;
+
+architecture Behavioral of fa_seq_tb_bhv is
+
+component fa_bhv_s
+   port( 
+  A, B, Cin,clk,rst : in std_logic;  
+  S, Cout : out std_logic
+  );  
+ end component; 
+ signal A,B,Cin,rst: std_logic:='0';
+ signal clk: std_logic:='1';
+ signal S,Cout: std_logic;
+ 
+ constant clock_period: time := 10 ns;
+ constant clock_num: integer := 1024;
+   
+begin
+
+UUT: fa_bhv_s port map (A=>A, B=>B, Cin=>Cin, S=>S, Cout=>Cout, clk=>clk, rst=>rst);
+
+-- Process for generating the clock
+    clk <= not clk after clock_period / 2;
+
+	process is
+
+	begin
+              
+ rst <= '1';
+ for i0 in 0 to 1 loop
+    for i1 in 0 to 1 loop
+        for i2 in 0 to 1 loop
+            for i3 in 0 to 1 loop
+                 A <= not A;
+               wait for clock_period;
+            end loop;
+        B <= not B;
+        end loop;
+    Cin <= not Cin;
+    end loop;
+ rst <= not rst;
+ end loop;
+ wait;
+	end process;
+
+end Behavioral;
+```
+Τα αποτελέσματα είναι ίδια ένα προς ένα με αυτά του ερωτήματος 2α του ακολουθιακού κυκλώματος.
+
+![](img/2bii_tb1.png)
+![](img/2bii_tb2.png)
+
+## RTL 
+
+Στο rtl σχηματικό φαίνεται και πάλι η χρήση του τελεστή '+' αλλά και η χρήση ενός D flip-flop με σύγχρονο reset, το οποίο λειτουργεί ως καταχωρητής. 
+
+![](img/2bii_rtl.png)
+
+## Κρίσιμο Μονοπάτι 
+
+Δεν ξέρω τι φταίει και τα βγάζει όλα ετσι...
+
+## Κατανάλωση πόρων FPGA
+
+![](img/2bii_fpgagraph.png)
+![](img/2bii_fpgatable.png)
 
