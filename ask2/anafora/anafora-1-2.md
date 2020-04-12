@@ -259,8 +259,8 @@ end Behavioral;
 
 ## Κατανάλωση πόρων FPGA
 
-![](img/2ai_fpgagraph)
-![](img/2ai_fpgatable)
+![](img/2ai_fpgagraph.png)
+![](img/2ai_fpgatable.png)
 
 ## Ακολουθιακό Κύκλωμα
 
@@ -425,7 +425,7 @@ end Structural;
 ## Κατανάλωση πόρων FPGA 
 
 ![](img/2aii_fpgagraph.png)
-![](img/2aii_fpgagraph.png)
+![](img/2aii_fpgatable.png)
 
 # Ερώτημα 2β
 
