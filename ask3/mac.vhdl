@@ -102,3 +102,36 @@ begin
 		end if;
 	end process;
 end FIR_impl;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use ieee.numeric_std.all;-- this is the only standard
+
+entity FIR_tb is
+generic(
+		-- M: positive := 8;
+		N: positive := 8;
+		L: positive := 20
+	);
+end FIR_tb;
+
+architecture test_FIR1 of FIR_tb is
+	signal x: unsigned(N-1 downto 0);
+	signal y: unsigned(L-1 downto 0);
+	signal clock: std_logic;
+	signal reset: std_logic;
+	signal valid_in: std_logic;
+	signal valid_out: std_logic;
+	constant clock_period: time := 10 ns;
+	constant clock_num: integer := 128;
+begin
+	unit_to_test:entity work.FIR port map (x => x,y => y, clock => clock, reset => reset, valid_in => valid_in, valid_out => valid_out);
+	clocking: process
+	begin
+		for i in 0 to clock_num loop
+			clock <= '1', '0' after clock_period / 2;
+			wait for clock_period;
+		end loop;
+	wait;
+	end process;
+end test_FIR1;
