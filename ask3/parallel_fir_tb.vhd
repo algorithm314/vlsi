@@ -23,26 +23,33 @@ begin
     UUT: entity work.parallel_fir port map (x=>x, valid_in=>valid_in, rst=>rst, clk=>clk, y=>y, valid_out=>valid_out);
 
 process begin
---    rst <= '0';
---    valid_in <= '1';
-    x(0) <= "00000001";
+    rst <= '0';
+    valid_in <= '1';
+    
     x(1) <= "00000000";
-    wait for clock_period;
     x(0) <= "00000000";
-    x(1) <= "00000000";
     wait for clock_period;
-    x(0) <= "00000000";
     x(1) <= "00000000";
+    x(0) <= "00000000";
     wait for clock_period;
-    x(0) <= "00000000";
     x(1) <= "00000000";
+    x(0) <= "00000000";
+    wait for clock_period;
+    x(1) <= "00000000";
+    x(0) <= "00000000";
+    wait for clock_period;
+    x(1) <= "00000001";
+    x(0) <= "00000000";
+    wait for clock_period; -- to apotelesma einai orato meta apo 1 kyklo
+    wait for 1 ns;
+    rst <= '1';
     wait;
 end process;
 
 clocking: process
 	begin
 		for i in 0 to clock_num loop
-			clk <= '0', '1' after clock_period / 2;
+			clk <= '1', '0' after clock_period / 2;
 			wait for clock_period;
 		end loop;
 	wait;
