@@ -28,10 +28,8 @@ begin
 					for i in 0 to 6 loop
 						RAM(i+1) <= RAM(i);
 					end loop;
-					do <= di;
-				else						-- read operation
-					do <= RAM(to_integer(addr));
 				end if;
+				do <= RAM(to_integer(addr));
 			end if;
 		end if;
 	end process;

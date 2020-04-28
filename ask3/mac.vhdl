@@ -1,3 +1,4 @@
+-- ghdl -c mac.vhdl ram_example.vhd rom_example.vhd -r FIR_tb --fst=/tmp/out.fst && gtkwave --rcvar 'do_initial_zoom_fit yes' /tmp/out.fst
 library IEEE;
 use IEEE.std_logic_1164.all;
 use ieee.numeric_std.all;-- this is the only standard. std_logic_unsigned is not
@@ -43,6 +44,7 @@ end MAC_impl;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use ieee.numeric_std.all;-- this is the only standard
+use std.textio.all;
 
 entity FIR is
 	generic(
@@ -63,7 +65,7 @@ end FIR;
 architecture FIR_impl of FIR is
 	signal stage,addr,ram_addr,rom_addr: unsigned(2 downto 0); -- ???
 	signal b_mac,c_mac,coeff,ram_di,ram_do: unsigned (N-1 downto 0);
-	signal mac_init,ram_en,ram_we: std_logic;
+	signal mac_init,ram_en,ram_we,valid_out_delay,mac_init_delay: std_logic;
 begin
 
 	mac_unit:entity work.MAC port map(b_in => b_mac,c_in => c_mac,a_out=>y,mac_init => mac_init,clock => clock,reset => reset);
@@ -76,28 +78,36 @@ begin
 	process (clock,reset)
 	begin
 		if reset = '1' then
-			y <= (others => '0');
-			stage <= (others => '0');
+			stage <= "111";
+			valid_out <= '0';
+			valid_out_delay <= '0';
+			mac_init_delay <= '0';
 		elsif rising_edge(clock) then
-			-- in next cycle result will be valid
-			if stage = "110" then
-				valid_out <= '1';
-			end if;
 			-- first 2 cycles are ram[0],rom[1]; ram[0],rom[0]
 			-- because ram has 1 cycle update latency
-			if valid_in = '1' and stage = "111" then
-				ram_addr <= to_unsigned(0,3);
-				rom_addr <= to_unsigned(1,3);
-				stage <= (others => '0');
-				mac_init <= '1';
-				valid_out <= '0';
-			elsif stage = "000" then
+			valid_out <= valid_out_delay;
+			mac_init <= mac_init_delay;
+			if stage = 7 then
+				if valid_in = '1' then
+					ram_addr <= to_unsigned(0,3);
+					rom_addr <= to_unsigned(1,3);
+					ram_di <= x;
+					ram_we <= '1';
+					stage <= "000";
+					mac_init_delay <= '1';
+				end if;
+				valid_out_delay <= '1';
+			elsif stage = 0 then
+				ram_we <= '0';
 				ram_addr <= to_unsigned(0,3);
 				rom_addr <= to_unsigned(0,3);
-				mac_init <= '0';
-			elsif stage >= 2 then
-				rom_addr <= stage;
-				ram_addr <= stage;
+				stage <= stage + 1;
+				mac_init_delay <= '0';
+				valid_out_delay <= '0';
+			elsif stage >= 1 then
+				rom_addr <= stage + 1;
+				ram_addr <= stage + 1;
+				stage <= stage + 1;
 			end if;
 		end if;
 	end process;
@@ -126,6 +136,36 @@ architecture test_FIR1 of FIR_tb is
 	constant clock_num: integer := 128;
 begin
 	unit_to_test:entity work.FIR port map (x => x,y => y, clock => clock, reset => reset, valid_in => valid_in, valid_out => valid_out);
+	process
+	begin
+		reset <= '1';
+		wait for clock_period;
+		reset <= '0';
+		valid_in <= '1';
+		x <= to_unsigned(255,8);
+		wait for clock_period;
+		valid_in <= '0';
+		wait for clock_period;
+		wait for clock_period;
+		wait for clock_period;
+		wait for clock_period;
+		wait for clock_period;
+		wait for clock_period;
+		wait for clock_period;
+
+		valid_in <= '1';
+		x <= to_unsigned(255,8);
+		wait for clock_period;
+		valid_in <= '0';
+		wait for clock_period;
+		wait for clock_period;
+		wait for clock_period;
+		wait for clock_period;
+		wait for clock_period;
+		wait for clock_period;
+		wait for clock_period;
+		wait;
+	end process;
 	clocking: process
 	begin
 		for i in 0 to clock_num loop
