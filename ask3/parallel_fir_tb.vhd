@@ -25,24 +25,41 @@ begin
 process begin
     rst <= '0';
     valid_in <= '1';
-    
-    x(1) <= "00000000";
-    x(0) <= "00000000";
+    x(1) <= "11111111";
+    x(0) <= "11111111";
     wait for clock_period;
-    x(1) <= "00000000";
-    x(0) <= "00000000";
+    x(1) <= "11111111";
+    x(0) <= "11111111";
     wait for clock_period;
-    x(1) <= "00000000";
-    x(0) <= "00000000";
+    x(1) <= "11111111";
+    x(0) <= "11111111";
     wait for clock_period;
-    x(1) <= "00000000";
-    x(0) <= "00000000";
+    x(1) <= "11111111";
+    x(0) <= "11111111";
     wait for clock_period;
-    x(1) <= "00000001";
-    x(0) <= "00000000";
-    wait for clock_period; -- to apotelesma einai orato meta apo 1 kyklo
-    wait for 1 ns;
-    rst <= '1';
+    x(1) <= "11111111";
+    x(0) <= "11111111";
+    wait for clock_period;
+    x(1) <= "11111111";
+    x(0) <= "11111111";
+    wait for clock_period;
+    x(1) <= "11111111";
+    x(0) <= "11111111";
+    wait for clock_period;
+    x(1) <= "11111111";
+    x(0) <= "11111111";
+
+--    x(0) <= "00000001";
+--    x(1) <= "00000001";
+--    x(2) <= "00000000";
+--    x(3) <= "00000000";
+--    wait for clock_period;
+--    x(0) <= "00000000";
+--    x(1) <= "00000000";
+--    x(2) <= "00000000";
+--    x(3) <= "00000000";
+--    wait for clock_period;
+
     wait;
 end process;
 
