@@ -80,13 +80,11 @@ end parallel_fir;
 architecture Behavioral of parallel_fir is
     signal x_reg: x_reg_type := (others => (others => '0'));
     signal y_reg : y_type;
-    signal valid_out_reg : std_logic_vector(M/P+2 downto 0) := (0 => '1', others => '0');
+    signal valid_out_cnt : unsigned(3 downto 0) := (others => '0');
     signal add_reg : twod_add_reg_type := (others => (others => (others => '0')));
     signal product_reg, product_delayed : twod_product_reg_type := (others => (others => (others => '0')));
     
 begin
-
-valid_out <= valid_out_reg(M/P+2); -- todo
 
 -- add delays (flip-flops) after the multipliers in order to synchronize the pipeline
 l1: for K in 0 to P-1 generate
@@ -107,9 +105,13 @@ process (clk, rst, valid_in)
 begin
     if rst = '1' then
         x_reg <= (others => (others => '0'));
+        y_reg <= (others => (others => '0'));
+        add_reg <= (others => (others => (others => '0')));
         y <= (others => (others => '0'));
-        valid_out_reg <= (0 => '1', others => '0');
-    elsif clk'event and clk = '1' and valid_in = '1' then
+        valid_out_cnt <= to_unsigned(0, valid_out_cnt'length);
+        valid_out <= '0';
+    elsif clk'event and clk = '1' then
+        if valid_in = '1' then
             -- intermediate registers
             -- P parallel pipelines
             for K in P-1 downto 0 loop
@@ -136,9 +138,15 @@ begin
             end loop;     
 
             -- valid out
-            for i in 1 to M/P+2 loop
-                valid_out_reg(i) <= valid_out_reg(i-1);
-            end loop;
+            if valid_out_cnt = 10 then -- latency : 10
+                valid_out <= '1';
+            else
+                valid_out_cnt <= valid_out_cnt + 1;
+                valid_out <= '0';
+            end if;
+        else
+            valid_out <= '0';
+        end if;
     end if;
 end process;
 
