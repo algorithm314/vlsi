@@ -34,7 +34,7 @@ generic
 	);
 	port (
 		input: in std_logic;
-		clock: in std_logic;
+		clock, valid_in: in std_logic;
 		rst: in std_logic;
 		output: out std_logic
 	);
@@ -44,17 +44,15 @@ architecture D of delay is
 signal ff: std_logic_vector(stages-1 downto 0);
 begin
 	output <= ff(0);
-	process(clock)
+	process(clock, valid_in, rst)
 	begin
-		if rising_edge(clock) then
-			if rst = '1' then
-				ff <= (others => '0');
-			else
-				ff(stages-1) <= input;
-				for i in 0 to stages-2 loop
-					ff(i) <= ff(i+1);
-				end loop;
-			end if;
+        if rst = '1' then
+            ff <= (others => '0');
+        elsif rising_edge(clock) and valid_in = '1' then
+            ff(stages-1) <= input;
+            for i in 0 to stages-2 loop
+                ff(i) <= ff(i+1);
+            end loop;
 		end if;
 	end process;
 end D;
@@ -83,7 +81,6 @@ architecture Behavioral of parallel_fir is
     signal valid_out_cnt : unsigned(3 downto 0) := (others => '0');
     signal add_reg : twod_add_reg_type := (others => (others => (others => '0')));
     signal product_reg, product_delayed : twod_product_reg_type := (others => (others => (others => '0')));
-    
 begin
 
 -- add delays (flip-flops) after the multipliers in order to synchronize the pipeline
@@ -91,8 +88,8 @@ l1: for K in 0 to P-1 generate
 l2: for I in 0 to M-1 generate
 l3: for J in 0 to N+N-1 generate
     l4: if I>0 generate
-        p1: entity work.delay 
-        generic map(I) port map(input => product_reg(K)(I)(J), output => product_delayed(K)(I)(J), clock => clk, rst => rst);
+        p1: entity work.delay
+        generic map(I) port map(input => product_reg(K)(I)(J), output => product_delayed(K)(I)(J), clock => clk, valid_in => valid_in, rst => rst);
     end generate;
     l5: if I=0 generate
         product_delayed(K)(I)(J) <= product_reg(K)(I)(J);
