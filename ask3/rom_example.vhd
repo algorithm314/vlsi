@@ -31,8 +31,7 @@ begin
                 rom_out <= rdata;
             end if;
         end if;
-    end process;			
-
+    end process;
 
 end Behavioral;
 
