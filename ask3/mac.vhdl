@@ -160,7 +160,7 @@ generic(
 		-- M: positive := 8;
 		N: positive := 8;
 		L: positive := 20;
-		inputs_num: positive := 9
+		inputs_num: positive := 21
 	);
 end FIR_tb;
 
@@ -173,8 +173,8 @@ architecture test_FIR1 of FIR_tb is
 	signal valid_out: std_logic;
 	constant clock_period: time := 10 ns;
 	constant clock_num: integer := 256;
-	type inputs_array is array(inputs_num-1 downto 0) of integer;
-	signal inputs: inputs_array := (255,255,255,255,255,255,255,255,255);
+	type inputs_array is array(0 to inputs_num-1) of integer;
+	signal inputs: inputs_array := (40, 248, 245, 124, 204, 36, 107, 234, 202, 245, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 begin
 	unit_to_test:entity work.FIR port map (x => x,y => y, clock => clock, reset => reset, valid_in => valid_in, valid_out => valid_out);
 	process
