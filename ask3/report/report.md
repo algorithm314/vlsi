@@ -16,6 +16,8 @@ author:
 * Κύκλος ρολογιού **6.5 ns**. Συχνότητα λειτουργίας **153MHz**.
 * Κατανάλωση πόρων **70 LUTs, 66 Flip Flops, 4 LUTRAM**.
 
+To πλεονέκτημα αυτής της υλοποίησης είναι ότι έχει μικρό κόστος σε πόρους του FPGA.
+
 ```vhdl
 -- ghdl -c mac.vhdl ram_example.vhd rom_example.vhd -r FIR_tb --fst=/tmp/out.fst && gtkwave --rcvar 'do_initial_zoom_fit yes' /tmp/out.fst
 library IEEE;
