@@ -272,6 +272,250 @@ begin
 
 end Behavioral;
 ```
+# Ζητούμενο 2
+
+Στο ζητούμενο αυτό ξεδιπλώνουμε το φίλτρο και το μετατρέπουμε σε πλήρως pipelined.
+Μπορούμε να πούμε ότι "σπάμε" τη διαδικασία σε 8 μεγάλα στάδια καθένα από τα οποία αποτελείται από την είδοδο,την δημιουργία του αντίστοιχου γινομένου και την άθροιση αυτού με το προηγούμενο άθροισμα(με το 0 αν είμαστε στο πρώτο στάδιο). Προσθέτουμε καταχωρητές σε κάθε στάδιο εισόδου, μετά από τη δημιουργία ενός γινομένου και μετά από τη δημιουργία ενός αθροίσματος.
+Για τον κατάλληλο συγχρονισμό προστίθεται σε κάθενα από τα 8 στάδια που περιγράψαμε, ένας ακόμα καταχωρητής στην είσοδο που λειτουργεί ως delay. Δεδομένου ότι όλες οι είσοδοι έχουν αρχικοποιηθεί με 0, παράγεται αποτέλεσμα μετά από latency 10 κύκλων.
+
+Το πλεονέκτημα της συγκεκριμένης υλοποίησης σε σχέση με το ζητούμενο 1 είναι ότι παίρνουμε αποτέλεσμα σε κάθε κύκλο ρολογιού. Το κρίσιμο μονοπάτι μειώνεται, κι έτσι αυξάνεται η συχνότητα λειτουργίας του fpga, γεγονός που αυξάνει και την απόδοση. Το μειωνέκτημα, ωστόσο, της συγκεκριμένης υλοποίησης είναι ότι χρειάζεται αρκετά μεγαλύτερος αριθμός πόρων FPGA, 8πλασιος περίπου (8 αθροιστές, 8 πολλαπλασιαστές και 4 καταχωρητές σε κάθε στάδιο)
+
+
+* Κύκλος ρολογιού **4.076 ns**. Συχνότητα λειτουργίας **245.33MHz**.
+* Κατανάλωση πόρων **120 LUTs, 289 Flip Flops, 9 LUTRAM, 31 IO, 1 BUFG**.
+
+## Κώδικας του `pipelined_fir`
+```vhdl
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+USE ieee.numeric_std.all;
+USE ieee.math_real."ceil";
+USE ieee.math_real."log2";
+
+PACKAGE types IS
+
+	CONSTANT taps        : INTEGER := 8; --number of fir filter taps
+	CONSTANT data_width  : INTEGER := 8; --width of data input 
+	CONSTANT coeff_width : INTEGER := 8; --width of coefficients 
+	CONSTANT ZERO : UNSIGNED(data_width + coeff_width + integer(ceil(log2(real(taps)))) - 1  downto 0) := (others => '0');
+	
+	TYPE coefficient_array IS ARRAY (0 TO taps-1) OF STD_LOGIC_VECTOR(coeff_width-1 DOWNTO 0);  --array of all coefficients
+    CONSTANT COEFS : coefficient_array := ("00000001", "00000010", "00000011", "00000100", "00000101", "00000110", "00000111", "00001000");
+	TYPE data_array IS ARRAY (0 TO 2*taps-1) OF UNSIGNED(data_width-1 DOWNTO 0);                    --array of historic data values, latency*2 for sync
+	TYPE product_array IS ARRAY (0 TO taps-1) OF UNSIGNED((data_width + coeff_width)-1 DOWNTO 0); --array of coefficient * data products
+	TYPE ADD_TYPE IS ARRAY(0 TO taps-1) of UNSIGNED(data_width + coeff_width + integer(ceil(log2(real(taps)))) - 1 downto 0); --array of sums of products*coef
+	TYPE valid_array IS ARRAY(0 TO 17) of UNSIGNED(0 DOWNTO 0); --length same as latency-1 (1 stage before result) 
+	
+END PACKAGE types;
+
+LIBRARY ieee;
+LIBRARY xil_defaultlib;
+USE ieee.std_logic_1164.all;
+USE ieee.std_logic_unsigned.all;
+USE ieee.numeric_std.all;
+USE ieee.math_real."ceil";
+USE ieee.math_real."log2";
+USE work.types.all;
+
+ENTITY fir_filter IS
+	PORT(
+			valid_in        :   IN	STD_LOGIC_VECTOR(0 DOWNTO 0);
+			clk				:	IN	STD_LOGIC;                                  --system clock
+			reset_n			:	IN	STD_LOGIC;                                  --active low asynchronous reset
+			data			:	IN	STD_LOGIC_VECTOR(data_width-1 DOWNTO 0);    --data stream
+--			data_pipeline   :   INOUT data_array;
+			result			:	OUT	STD_LOGIC_VECTOR((data_width + coeff_width + integer(ceil(log2(real(taps)))) - 1) DOWNTO 0);
+--			ADD             :   INOUT  ADD_TYPE;  --filtered result
+			valid_out       :   OUT STD_LOGIC_VECTOR(0 DOWNTO 0));
+--			valid_reg       :   INOUT valid_array;
+--			count           :   INOUT STD_LOGIC_VECTOR(2 downto 0):="000");
+		    
+END fir_filter;
+
+ARCHITECTURE behavior OF fir_filter IS
+	SIGNAL products 		: product_array:=(OTHERS => (OTHERS => '0'));     --array of coefficient*data products
+	  SIGNAL valid_reg        : valid_array:=(OTHERS => (OTHERS => '0'));
+	  SIGNAL data_pipeline    : data_array:=(OTHERS => (OTHERS => '0'));        --pipeline of historic data values
+	  SIGNAL ADD              :  ADD_TYPE:=(OTHERS => (OTHERS => '0'));
+	ATTRIBUTE syn_multstyle : string;
+    ATTRIBUTE syn_multstyle OF products : SIGNAL IS "logic";
+    SIGNAL count : STD_LOGIC_VECTOR(2 downto 0):="000";
+	
+BEGIN
+    
+	PROCESS(clk, reset_n)
+		
+	BEGIN
+	
+		IF(reset_n = '1') THEN                                       --asynchronous reset
+		
+			data_pipeline <= (OTHERS => (OTHERS => '0'));              --clear data pipeline values
+			valid_reg <= (OTHERS => (OTHERS => '0'));
+			products <= (OTHERS => (OTHERS => '0'));
+		    ADD <= (OTHERS => (OTHERS => '0'));
+			result <= (OTHERS => '0');                                  --clear result output
+			valid_out <= (OTHERS => '0');
+		ELSIF(clk'EVENT AND clk = '1') THEN                          --not reset
+	
+			data_pipeline <= UNSIGNED(data) & data_pipeline(0 TO 2*taps-2);	--shift new data into data pipeline
+                                                                            --even index is extra latency, odd index shifts to product array
+			IF valid_in = "1" THEN 
+			 IF  count > "000" THEN --there is previous valid_in=0 that affects validity of final result 
+			     valid_reg <= UNSIGNED(not(valid_in)) & valid_reg(0 TO 16); --shift inversed new valid_in (0) into valid_reg
+			     count <= count-1 ; --previous valid_in=0 goes to next stage 
+			 ELSIF count="000" THEN --previous valid_in = 0 does not exist anymore
+			     valid_reg<= UNSIGNED(valid_in) & valid_reg(0 TO 16);
+			 END IF; 
+			ELSIF valid_in = "0" THEN  
+		      valid_reg <= UNSIGNED(valid_in) & valid_reg(0 TO 16); --shift new valid_in into valid_reg
+			  count <= "111" ; --update counter, new valid_in=0 that affects "this" and the next 7 final results' validity 
+			END IF;
+			FOR i IN taps-1 DOWNTO 0 LOOP
+			 IF i = 0 THEN 
+			     ADD(i) <=  products(i) + ZERO ;
+			 ELSE
+			     ADD(i) <=  products(i) + ADD(i-1);
+			 END IF; 
+			 products(i) <= data_pipeline(2*i + 1) * UNSIGNED(COEFS(i));
+			END LOOP;	
+			result <= STD_LOGIC_VECTOR(ADD(taps-1));	                          --output result	
+			valid_out <= STD_LOGIC_VECTOR(valid_reg(17));                         --valid_out
+				
+		END IF;
+	END PROCESS;
+	
+	
+END behavior;
+``` 
+## Κώδικας του testbench
+```vhdl
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+use IEEE.math_real."ceil";
+use IEEE.math_real."log2";
+use work.types.all;
+
+entity fir_filter_tb is
+end fir_filter_tb;
+
+architecture Behavioral of fir_filter_tb is
+
+        signal  valid_in     : std_logic_vector(0 DOWNTO 0);
+		signal	clk          : std_logic:='1';
+		signal  rst          : std_logic;                                  
+		signal 	data		 : std_logic_vector(data_width - 1  DOWNTO 0);
+--		signal  data_pipeline: data_array; 
+        signal  result		 : STD_LOGIC_VECTOR((data_width + coeff_width + integer(ceil(log2(real(taps)))) - 1) DOWNTO 0);
+--        signal  ADD          : ADD_TYPE;
+        signal  valid_out    : std_logic_vector(0 DOWNTO 0);
+--        signal  valid_reg    : valid_array;
+--        signal  count        : std_logic_vector(2 downto 0):="000";
+			
+		constant clock_period: time := 10 ns;
+	    constant clock_num: integer := 2048;
+begin
+    UUT: entity work.fir_filter port map (valid_in=>valid_in, clk=>clk, reset_n=>rst, data=>data,
+     result=>result, valid_out=>valid_out);
+
+-- Process for generating the clock
+    clk <= not clk after clock_period / 2;
+    
+process is
+ begin
+ rst <= '1';
+ valid_in <= "0";
+ wait for clock_period;
+    rst <= '0';
+    valid_in <= "0";
+    
+    data <= std_logic_vector(to_unsigned(40,8));
+            wait for clock_period;
+    data <= std_logic_vector(to_unsigned(248,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(245,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(124,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(204,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(36,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(107,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(234,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(202,8));
+            wait for clock_period;
+    data <= std_logic_vector(to_unsigned(245,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(0,8));
+            wait for clock_period;
+    
+    
+    data <= std_logic_vector(to_unsigned(5,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(12,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(33,8));
+            wait for clock_period;
+            valid_in <= "1";
+            data <= std_logic_vector(to_unsigned(28,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(6,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(2,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(17,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(9,8));
+            wait for clock_period;
+            data <= std_logic_vector(to_unsigned(1,8));
+            wait for clock_period;
+    for i0 in 0 to 1 loop
+        for i3 in 0 to 5 loop
+            data <= std_logic_vector(to_unsigned((i3 mod 8),8));
+            wait for clock_period;
+            end loop;
+        valid_in <= "0";
+        data <= std_logic_vector(to_unsigned(6,8));
+        wait for clock_period;
+        valid_in <= "1";
+        data <= std_logic_vector(to_unsigned(7,8));
+        wait for clock_period;
+        for i4 in 8 to 20 loop
+            data <= std_logic_vector(to_unsigned((i4 mod 8),8));
+            wait for clock_period;
+            end loop;
+        -- rst <= not rst;
+        end loop;
+    wait;
+end process;
+
+
+
+end Behavioral;
+```
 
 # Ζητούμενο 3
 
