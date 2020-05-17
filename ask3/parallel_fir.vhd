@@ -9,7 +9,7 @@ package parallel_fir_types is
     constant N : positive := 8;
     constant M : positive := 8;
     constant logM : integer := integer(ceil(log2(real(M))));
-    constant Y_BITS : positive := M + N + logM;
+    constant Y_BITS : positive := M + N + logM; --19
     constant ZERO : unsigned(Y_BITS - 1  downto 0) := (others => '0');
    
     type x_type is array(P-1 downto 0) of unsigned(N-1 downto 0);
